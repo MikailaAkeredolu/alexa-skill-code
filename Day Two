@@ -4,8 +4,6 @@
 
 
 
-#Please visit https://alexa.design/cookbook for additional examples on implementing slots
-
 const Alexa = require('ask-sdk-core');
 
 const LaunchRequestHandler = {
@@ -30,8 +28,8 @@ const OrderHandler = {
     },
     handle(handlerInput) {
         
-        const slots = handlerInput.requestEnvelope.request.intent.slots;
-      const {size, crust, topping} = slots;
+    const slots = handlerInput.requestEnvelope.request.intent.slots;
+    const {size, crust, topping} = slots;
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
@@ -39,27 +37,27 @@ const OrderHandler = {
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) 
+        .addElicitSlotDirective(slotToElicit) // if no match ask a again
         .getResponse();
 }
 
  if (!crust.value || !(crust.value === 'hand tossed' || crust.value === 'thin crust' || crust.value === 'sicilian' || crust.value === 'deep dish')) {
-    const slotToElicit = 'size';
+    const slotToElicit = 'crust';
     const speechOutput = ``;
     return handlerInput.responseBuilder
         .speak(speechOutput)
          .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit)
+        .addElicitSlotDirective(slotToElicit) // if no match ask a again
         .getResponse();
 }
 
  if (!topping.value || !(topping.value === 'ham' || topping.value === 'sausage' || topping.value === 'cheese' || topping.value === 'pepperoni')) {
-    const slotToElicit = 'size';
+    const slotToElicit = 'topping';
     const speechOutput = ``;
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit)
+        .addElicitSlotDirective(slotToElicit) // if no match ask a again
         .getResponse();
 }
 
@@ -112,7 +110,6 @@ const SessionEndedRequestHandler = {
     }
 };
 
-
 const ErrorHandler = {
     canHandle() {
         return true;
@@ -128,8 +125,6 @@ const ErrorHandler = {
     }
 };
 
-#This handler acts as the entry point for your skill, routing all request and response
-# payloads to the handlers above. 
 exports.handler = Alexa.SkillBuilders.custom()
     .addRequestHandlers(
         LaunchRequestHandler,
@@ -137,11 +132,11 @@ exports.handler = Alexa.SkillBuilders.custom()
         HelpIntentHandler,
         CancelAndStopIntentHandler,
         SessionEndedRequestHandler
-        //IntentReflectorHandler
-        ) // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+        ) 
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
+
 
 
 
