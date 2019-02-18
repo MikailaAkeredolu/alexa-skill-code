@@ -26,9 +26,7 @@ const OrderHandler = {
     handle(handlerInput) {
         
         const slots = handlerInput.requestEnvelope.request.intent.slots;
-      //ES6 Destructuring
       const {size, crust, topping} = slots;
-      //const guestResponse = handlerInput.requestEnvelope.request.name.value;
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
@@ -36,7 +34,7 @@ const OrderHandler = {
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit) 
         .getResponse();
 }
 
@@ -46,7 +44,7 @@ const OrderHandler = {
     return handlerInput.responseBuilder
         .speak(speechOutput)
          .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
 }
 
@@ -56,7 +54,7 @@ const OrderHandler = {
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
 }
 
@@ -105,7 +103,6 @@ const SessionEndedRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
     },
     handle(handlerInput) {
-        // Any cleanup logic goes here.
         return handlerInput.responseBuilder.getResponse();
     }
 };
