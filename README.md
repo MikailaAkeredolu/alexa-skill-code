@@ -6,3 +6,7 @@
 
  Day Two : Students step it up and build out a Real world Pizza Ordering Voice Aplication
  - Students learn about managing sessions and carring out conversations with users as well as adding custom functionalities
+ 
+ 
+ Bonus Lab for students that move quickly through the material
+ - Develop a skill that reveals the wifi password of the current location
