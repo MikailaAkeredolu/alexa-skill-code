@@ -2,9 +2,29 @@
 
 #DAY TWO
 
-
-
 const Alexa = require('ask-sdk-core');
+
+const SizeArray = [
+{size: 'extra large', price : 10.00},
+{size: 'large', price : 8.00},
+{size: 'medium', price : 6.00},
+{size: 'small', price : 4.00}
+]
+
+const crustArray = [
+{crust: 'hand tossed', price : 3.00},
+{crust: 'thin crust', price : 2.00},
+{crust: 'sicilian', price : 1.00},
+{crust: 'deep dish', price : 4.00},
+]
+
+const toppingArray = [
+{topping: 'ham', price : 1.00},
+{topping: 'cheese', price : 1.00},
+{topping: 'pepperoni', price : 2.00},
+{topping: 'sausage', price : 2.00},
+]
+
 
 const LaunchRequestHandler = {
     
@@ -33,43 +53,80 @@ const OrderHandler = {
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
-    const speechOutput = ``;
+    const speechOutput = `I did not catch that size. Try again`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
-        .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
 }
 
  if (!crust.value || !(crust.value === 'hand tossed' || crust.value === 'thin crust' || crust.value === 'sicilian' || crust.value === 'deep dish')) {
     const slotToElicit = 'crust';
-    const speechOutput = ``;
+    const speechOutput = `I did not catch the type of crust you wanted. Try again`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
-         .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
 }
 
  if (!topping.value || !(topping.value === 'ham' || topping.value === 'sausage' || topping.value === 'cheese' || topping.value === 'pepperoni')) {
     const slotToElicit = 'topping';
-    const speechOutput = ``;
+    const speechOutput =  `I did not catch the type of topping you wanted. Try again`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
-        .reprompt(speechOutput)
-        .addElicitSlotDirective(slotToElicit) // if no match ask a again
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
 }
 
+function getSizePrice(){
+    for(var x = 0; x < SizeArray.length; x++){
+        if(size.value === SizeArray[x].size){
+        return SizeArray[x].price;
+        } 
+    }
+
+}
+
+function getCrustPrice(){
+    for(var x = 0; x < crustArray.length; x++){
+        if(crust.value === crustArray[x].crust){
+        return crustArray[x].price;
+        } 
+    }
+
+}
+
+function getToppingPrice(){
+    for(var x = 0; x < toppingArray.length; x++){
+        if(topping.value === toppingArray[x].topping){
+        return toppingArray[x].price;
+        } 
+    }
+
+}
+
+
+function finalPrice(){
+    var sizePrice = getSizePrice();
+    var crustPrice = getCrustPrice();
+    var toppingPrice = getToppingPrice();
+    
+    var totalPrice =  sizePrice + crustPrice + toppingPrice;
+    return totalPrice;
+}
+
+
     const speechOutput = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> You mentioned,
-    that you wanted a ${size.value} , ${topping.value } pizza with ${crust.value}.
-    Your total will be forty dollars and will be ready in fifteen minutes <audio src='soundbank://soundlibrary/foley/amzn_sfx_swoosh_cartoon_fast_01'/>`;
+    that you wanted a ${size.value} , ${crust.value} pizza with ${topping.value}
+    Therefore your total is` + finalPrice() + ` dollars. Thanks for your order,` + 
+    `It will be ready shortly <audio src='soundbank://soundlibrary/foley/amzn_sfx_swoosh_cartoon_fast_01'/>`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .reprompt(speechOutput)
         .getResponse();
 
      }
+
 };
 
 const HelpIntentHandler = {
