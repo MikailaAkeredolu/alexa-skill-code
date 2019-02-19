@@ -1,5 +1,6 @@
 #DAY ONE
 
+
 const Alexa = require('ask-sdk-core');
 
 const LaunchRequestHandler = {
@@ -21,7 +22,7 @@ const HelloWorldIntentHandler = {
     },
     handle(handlerInput) {
         const guestName = handlerInput.requestEnvelope.request.intent.slots.name.value;
-        const speechText = getGreeting() + ` ${guestName} , ` +  getQuote() + " Also your lucky lotto numbers are " + generateArrayOfLottoNumbers();
+        const speechText = ` Good afternoon ${guestName} , ` +  getQuote();
         return handlerInput.responseBuilder
             .speak(speechText)
          .reprompt(speechText)
@@ -78,54 +79,24 @@ const ErrorHandler = {
             .reprompt(speechText)
             .getResponse();
     }
-};
-
-   function getGreeting(){
-       var myDate = new Date();
-       var hours = myDate.getUTCHours() -5;
-       if(hours < 0){
-           hours = hours + 24;
-       }
-       if(hours < 12){
-           return "good morning";
-       }else if(hours < 18){
-           return " Good afternoon";
-       }else{
-           return " good evening";
-       }
-   } 
+}; 
 
    let greetings = [
        
-       "One, that chases two rats will catch none." + " <audio src='soundbank://soundlibrary/animals/amzn_sfx_rat_squeaks_01'/>",
-       "As long as there is life, there is hope" + "<audio src='soundbank://soundlibrary/magic/amzn_sfx_fairy_melodic_chimes_01'/>",
-       "For the eyes not to witness evil, the legs are the remedy" + " <audio src='soundbank://soundlibrary/human/amzn_sfx_person_running_01'/>",
+        "One, that chases two rats will catch none." + " <audio src='soundbank://soundlibrary/animals/amzn_sfx_rat_squeaks_01'/>",
+        "As long as there is life, there is hope" + "<audio src='soundbank://soundlibrary/magic/amzn_sfx_fairy_melodic_chimes_01'/>",
+        "For the eyes not to witness evil, the legs are the remedy" + " <audio src='soundbank://soundlibrary/human/amzn_sfx_person_running_01'/>",
         "A flowing stream, never looks back " + "<audio src='soundbank://soundlibrary/nature/amzn_sfx_stream_01'/>",
+        "The absence of the cat" + "<audio src='soundbank://soundlibrary/animals/amzn_sfx_cat_meow_1x_01'/>" + " turns the mouse" + "<audio src='soundbank://soundlibrary/animals/amzn_sfx_rat_squeak_2x_01'/>" + " into the house owner",
+        "Lamps are not valued in the afternoons, but they do get appreciated at night" + "<audio src='soundbank://soundlibrary/magic/amzn_sfx_fairy_melodic_chimes_01'/>",
+        "Money is essential but not as essential as human beings" + "<audio src='soundbank://soundlibrary/human/amzn_sfx_large_crowd_cheer_03'/>",
+        "We cannot ask a King to walk, just becasue we want to appreciate the horse" + "<audio src='soundbank://soundlibrary/animals/amzn_sfx_horse_huff_whinny_01'/>"
+        
        ];
        
        function getQuote(){
            let rand = Math.floor((Math.random() * greetings.length) + 1);
            return greetings[rand];
-       }
-       
-       
-       function generateArrayOfLottoNumbers(){
-           let result = [ ];
-           let myArray = getLottoNumber();
-           let StringResult;
-           let finalRes = '';
-           for(let x = 0; x <= 5; x++){
-                result.push(getLottoNumber(myArray));
-                StringResult = result.toString();
-                finalRes = StringResult.replace(/,/g, '-');
-
-           }
-           return finalRes;
-        }
-        
-        function getLottoNumber(){
-           let rand = Math.floor((Math.random() * 99) + 1);
-           return rand;
        }
    
 exports.handler = Alexa.SkillBuilders.custom()
@@ -139,6 +110,8 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
+
+
 
 
 #Interaction Model
