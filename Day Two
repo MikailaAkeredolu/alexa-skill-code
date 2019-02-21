@@ -26,8 +26,10 @@ const OrderHandler = {
     },
     handle(handlerInput) {
         
-    const slots = handlerInput.requestEnvelope.request.intent.slots;
-    const {size, crust, topping} = slots;
+        const size = handlerInput.requestEnvelope.request.intent.slots.size;
+        const crust = handlerInput.requestEnvelope.request.intent.slots.crust;
+        const topping = handlerInput.requestEnvelope.request.intent.slots.topping;
+     
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
