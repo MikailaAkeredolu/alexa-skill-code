@@ -27,20 +27,20 @@ const OrderHandler = {
     handle(handlerInput) {
         
     const slots = handlerInput.requestEnvelope.request.intent.slots;
-    const {size, crust, topping} = slots;  //destructuring objects
+    const {size, crust, topping} = slots;
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
-    const speechOutput = `I did not catch that size. Try again`;
+    const speechOutput = `I did not catch that size. Try again by saying something like extra large, large , medium or small `;
     return handlerInput.responseBuilder
         .speak(speechOutput)
-        .addElicitSlotDirective(slotToElicit) 
+        .addElicitSlotDirective(slotToElicit)
         .getResponse();
-}//.addElicitSlotDirective(slotToElicit) .....have alexa ask again
+}
 
  if (!crust.value || !(crust.value === 'hand tossed' || crust.value === 'thin crust' || crust.value === 'sicilian' || crust.value === 'deep dish')) {
     const slotToElicit = 'crust';
-    const speechOutput = `I did not catch the type of crust you wanted. Try again`;
+    const speechOutput = `I did not catch the type of crust you wanted. Try again by saying something like hand tossed, thin crust , sicilian or deep dish `;
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .addElicitSlotDirective(slotToElicit)
@@ -49,7 +49,7 @@ const OrderHandler = {
 
  if (!topping.value || !(topping.value === 'ham' || topping.value === 'sausage' || topping.value === 'cheese' || topping.value === 'pepperoni')) {
     const slotToElicit = 'topping';
-    const speechOutput =  `I did not catch the type of topping you wanted. Try again`;
+    const speechOutput =  `I did not catch the type of topping you wanted. Try again by saying something like ham, sausage , cheese or pepperoni `;
     return handlerInput.responseBuilder
         .speak(speechOutput)
         .addElicitSlotDirective(slotToElicit)
@@ -57,7 +57,7 @@ const OrderHandler = {
 }
 
     const speechOutput = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> You mentioned,
-    that you wanted a ${size.value} , ${crust.value} pizza with ${topping.value}`  + 
+    that you wanted a ${size.value} , ${crust.value} pizza with ${topping.value} Thanks for your order,` + 
     `It will be ready shortly <audio src='soundbank://soundlibrary/foley/amzn_sfx_swoosh_cartoon_fast_01'/>`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
@@ -67,8 +67,6 @@ const OrderHandler = {
      }
 
 };
-
-
 
 const HelpIntentHandler = {
     canHandle(handlerInput) {
@@ -134,6 +132,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
+
 
 
 
