@@ -27,16 +27,16 @@ const OrderHandler = {
     handle(handlerInput) {
         
     const slots = handlerInput.requestEnvelope.request.intent.slots;
-    const {size, crust, topping} = slots;
+    const {size, crust, topping} = slots;  //destructuring objects
       
  if (!size.value || !(size.value === 'extra large' || size.value === 'large' || size.value === 'medium' || size.value === 'small')) {
     const slotToElicit = 'size';
     const speechOutput = `I did not catch that size. Try again`;
     return handlerInput.responseBuilder
         .speak(speechOutput)
-        .addElicitSlotDirective(slotToElicit)
+        .addElicitSlotDirective(slotToElicit) 
         .getResponse();
-}
+}//.addElicitSlotDirective(slotToElicit) .....have alexa ask again
 
  if (!crust.value || !(crust.value === 'hand tossed' || crust.value === 'thin crust' || crust.value === 'sicilian' || crust.value === 'deep dish')) {
     const slotToElicit = 'crust';
