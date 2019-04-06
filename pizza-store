@@ -1,0 +1,145 @@
+//Created By Mikaila Akeredolu of TECH552 LLC via http://www.tech552.com
+
+const Alexa = require('ask-sdk-core');
+
+//we need to create our menu
+const sizeArray = [
+    {size: 'large', price:10},
+    {size: 'medium', price:7},
+    {size: 'small', price: 5}
+    ];
+    
+const toppingArray = [
+  {topping: 'peperonni', price : 3.00},
+  {topping: 'cheese', price : 2.00},
+  {topping: 'sausage', price : 1.00}
+  ];
+  
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speechText = 'Welcome, To get Started say something like i would like to order a pizza';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
+const OrderIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'OrderIntent';
+    },
+    handle(handlerInput) {
+       const sizeSlot = handlerInput.requestEnvelope.request.intent.slots.size.value;
+         const toppingSlot = handlerInput.requestEnvelope.request.intent.slots.topping.value;
+         
+         
+         
+         
+         
+         
+//Calculate menu based on customer selection
+//loop through and check if the value that the customer gave us matches our menu 
+//if so then return the price
+function getSizePrice(){
+    for(var x = 0; x < sizeArray.length; x++){
+        if(sizeSlot === sizeArray[x].size){
+            return sizeArray[x].price;
+        }
+    }
+}
+  
+  
+function getToppingPrice(){
+    for(var x = 0; x < toppingArray.length; x++){
+        if(toppingSlot === toppingArray[x].topping){
+            return toppingArray[x].price;
+        }
+    }
+}
+
+
+function finalPrice(){
+    var sizePrice = getSizePrice();
+    var topppingPrice = getToppingPrice();
+    var total = sizePrice + topppingPrice;
+    return total;
+}
+   
+       const speechText = `I heard you say you wanted a , ` + sizeSlot +
+        ', ' + toppingSlot + `, pizza, Therefore, your total is ` + finalPrice() + `dollars`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speechText = 'You can say hello to me! How can I help?';
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
+                || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speechText = 'Goodbye!';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .getResponse();
+    }
+};
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
+
+const ErrorHandler = {
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.message}`);
+        const speechText = `Sorry, I couldn't understand what you said. Please try again.`;
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+        OrderIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        SessionEndedRequestHandler,
+      ) 
+    .addErrorHandlers(
+        ErrorHandler)
+    .lambda();
