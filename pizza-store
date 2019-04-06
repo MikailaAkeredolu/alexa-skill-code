@@ -137,3 +137,156 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
+    
+    
+    
+    // INTERACTION MODEL
+    
+    {
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "pizza store",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "OrderIntent",
+                    "slots": [
+                        {
+                            "name": "size",
+                            "type": "Size_Type",
+                            "samples": [
+                                "gimme a {size}",
+                                "{size} is fine",
+                                "Let's go with a {size}",
+                                "I will take a {size}",
+                                "{size}"
+                            ]
+                        },
+                        {
+                            "name": "topping",
+                            "type": "Topping_Type",
+                            "samples": [
+                                "Let's go with {topping}",
+                                "gimme a {topping}",
+                                "I will take a {topping}",
+                                "{topping}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "take my order",
+                        "order pizza",
+                        "I would like to order a pizza"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "Size_Type",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "large"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "medium"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "small"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Topping_Type",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "peperroni"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "cheese"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sausage"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        "dialog": {
+            "intents": [
+                {
+                    "name": "OrderIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "size",
+                            "type": "Size_Type",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.438589583128.145699933841"
+                            }
+                        },
+                        {
+                            "name": "topping",
+                            "type": "Topping_Type",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.162600812403.180627811869"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "delegationStrategy": "ALWAYS"
+        },
+        "prompts": [
+            {
+                "id": "Elicit.Slot.438589583128.145699933841",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Would you like a small, medium or large pizza?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.162600812403.180627811869",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "Would you like cheese, sauasage or peperroni?"
+                    }
+                ]
+            }
+        ]
+    }
+}
