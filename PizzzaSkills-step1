@@ -1,0 +1,239 @@
+
+Interaction model for step 1
+
+
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "donut king",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "OrderIntent",
+                    "slots": [
+                        {
+                            "name": "size",
+                            "type": "SIZE_OF_PIZZA"
+                        },
+                        {
+                            "name": "crust",
+                            "type": "TYPE_OF_CRUST"
+                        },
+                        {
+                            "name": "topping",
+                            "type": "TYPE_OF_TOPPING"
+                        }
+                    ],
+                    "samples": [
+                        "I would like to order a {size} {crust} with {topping}",
+                        "order pizza",
+                        "I would like to order a pizza"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                }
+            ],
+            "types": [
+                {
+                    "name": "SIZE_OF_PIZZA",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "large"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "medium"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "small"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "TYPE_OF_CRUST",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "hand tossed"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "thin crust"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "deep dish"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "TYPE_OF_TOPPING",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "ham"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "sausage"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "cheese"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
+
+
+
+
+CODE FOR STEP 1
+
+
+const Alexa = require('ask-sdk-core');
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speechText = `Welcome to Pizza King, To get started you can say something like i would like to order a pizza`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+const OrderIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'OrderIntent';
+    },
+    handle(handlerInput) {
+        const size = handlerInput.requestEnvelope.request.intent.slots.size.value;
+        const crust = handlerInput.requestEnvelope.request.intent.slots.crust.value;
+        const topping = handlerInput.requestEnvelope.request.intent.slots.topping.value;
+        
+        const speechText = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> Did someone order a ${size}, ${crust} pizza with ${topping} ?`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speechText = 'You can say hello to me! How can I help?';
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
+                || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speechText = 'Goodbye!';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .getResponse();
+    }
+};
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
+// The intent reflector is used for interaction model testing and debugging.
+// It will simply repeat the intent the user said. You can create custom handlers
+// for your intents by defining them above, then also adding them to the request
+// handler chain below.
+const IntentReflectorHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest';
+    },
+    handle(handlerInput) {
+        const intentName = handlerInput.requestEnvelope.request.intent.name;
+        const speechText = `You just triggered ${intentName}`;
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+// Generic error handling to capture any syntax or routing errors. If you receive an error
+// stating the request handler chain is not found, you have not implemented a handler for
+// the intent being invoked or included it in the skill builder below.
+const ErrorHandler = {
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.message}`);
+        const speechText = `Sorry, I couldn't understand what you said. Please try again.`;
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
+// This handler acts as the entry point for your skill, routing all request and response
+// payloads to the handlers above. Make sure any new handlers or interceptors you've
+// defined are included below. The order matters - they're processed top to bottom.
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+        OrderIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        SessionEndedRequestHandler,
+        IntentReflectorHandler) // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+    .addErrorHandlers(
+        ErrorHandler)
+    .lambda();
