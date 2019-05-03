@@ -1,1 +1,193 @@
-//Todo
+const Alexa = require('ask-sdk-core');
+
+//=====================================================================================================================  
+//Create Menu
+//=====================================================================================================================  
+
+const SizeArray = [
+{size: 'extra large', price : 10.00},
+{size: 'large', price : 8.00},
+{size: 'medium', price : 6.00},
+{size: 'small', price : 4.00}
+]
+
+const crustArray = [
+{crust: 'hand tossed', price : 3.00},
+{crust: 'thin crust', price : 2.00},
+{crust: 'sicilian', price : 1.00},
+{crust: 'deep dish', price : 4.00},
+]
+
+const toppingArray = [
+{topping: 'ham', price : 1.00},
+{topping: 'cheese', price : 1.00},
+{topping: 'pepperoni', price : 2.00},
+{topping: 'sausage', price : 2.00},
+]
+
+
+
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        const speechText = `Welcome to Pizza King, To get started you can say something like i would like to order a pizza`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
+
+
+const OrderIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'OrderIntent';
+    },
+    handle(handlerInput) {
+        const size = handlerInput.requestEnvelope.request.intent.slots.size.value;
+        const crust = handlerInput.requestEnvelope.request.intent.slots.crust.value;
+        const topping = handlerInput.requestEnvelope.request.intent.slots.topping.value;
+        
+//=====================================================================================================================    
+// FUNCTIONS
+//=====================================================================================================================  
+        
+function getCrustPrice(){
+    for(var x = 0; x < crustArray.length; x++){
+        if(crust.value === crustArray[x].crust){
+        return crustArray[x].price;
+        } 
+    }
+
+}
+
+function getToppingPrice(){
+    for(var x = 0; x < toppingArray.length; x++){
+        if(topping.value === toppingArray[x].topping){
+        return toppingArray[x].price;
+        } 
+    }
+
+}
+
+
+function finalPrice(){
+    var sizePrice = getSizePrice();
+    var crustPrice = getCrustPrice();
+    var toppingPrice = getToppingPrice();
+    
+    var totalPrice =  sizePrice + crustPrice + toppingPrice;
+    return totalPrice;
+}
+        
+//=====================================================================================================================          
+        
+        
+       const speechText = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> You mentioned,
+    that you wanted a ${size.value} , ${crust.value} pizza with ${topping.value}
+    Therefore your total is` + finalPrice() + ` dollars. Thanks for your order,` + 
+    `It will be ready shortly <audio src='soundbank://soundlibrary/foley/amzn_sfx_swoosh_cartoon_fast_01'/>`;
+    return handlerInput.responseBuilder
+        .speak(speechOutput)
+        .reprompt(speechOutput)
+        .getResponse();  
+        
+ 
+    }
+};
+
+
+
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
+        const speechText = 'You can say hello to me! How can I help?';
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+const CancelAndStopIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent'
+                || handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent');
+    },
+    handle(handlerInput) {
+        const speechText = 'Goodbye!';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .getResponse();
+    }
+};
+const SessionEndedRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'SessionEndedRequest';
+    },
+    handle(handlerInput) {
+        // Any cleanup logic goes here.
+        return handlerInput.responseBuilder.getResponse();
+    }
+};
+
+// The intent reflector is used for interaction model testing and debugging.
+// It will simply repeat the intent the user said. You can create custom handlers
+// for your intents by defining them above, then also adding them to the request
+// handler chain below.
+const IntentReflectorHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest';
+    },
+    handle(handlerInput) {
+        const intentName = handlerInput.requestEnvelope.request.intent.name;
+        const speechText = `You just triggered ${intentName}`;
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            //.reprompt('add a reprompt if you want to keep the session open for the user to respond')
+            .getResponse();
+    }
+};
+
+// Generic error handling to capture any syntax or routing errors. If you receive an error
+// stating the request handler chain is not found, you have not implemented a handler for
+// the intent being invoked or included it in the skill builder below.
+const ErrorHandler = {
+    canHandle() {
+        return true;
+    },
+    handle(handlerInput, error) {
+        console.log(`~~~~ Error handled: ${error.message}`);
+        const speechText = `Sorry, I couldn't understand what you said. Please try again.`;
+
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .getResponse();
+    }
+};
+
+// This handler acts as the entry point for your skill, routing all request and response
+// payloads to the handlers above. Make sure any new handlers or interceptors you've
+// defined are included below. The order matters - they're processed top to bottom.
+exports.handler = Alexa.SkillBuilders.custom()
+    .addRequestHandlers(
+        LaunchRequestHandler,
+        OrderIntentHandler,
+        HelpIntentHandler,
+        CancelAndStopIntentHandler,
+        SessionEndedRequestHandler,
+        IntentReflectorHandler) // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
+    .addErrorHandlers(
+        ErrorHandler)
+    .lambda();
+
