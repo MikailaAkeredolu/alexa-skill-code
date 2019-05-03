@@ -5,7 +5,6 @@ const Alexa = require('ask-sdk-core');
 //=====================================================================================================================  
 
 const SizeArray = [
-{size: 'extra large', price : 10.00},
 {size: 'large', price : 8.00},
 {size: 'medium', price : 6.00},
 {size: 'small', price : 4.00}
@@ -14,14 +13,12 @@ const SizeArray = [
 const crustArray = [
 {crust: 'hand tossed', price : 3.00},
 {crust: 'thin crust', price : 2.00},
-{crust: 'sicilian', price : 1.00},
 {crust: 'deep dish', price : 4.00},
 ]
 
 const toppingArray = [
 {topping: 'ham', price : 1.00},
 {topping: 'cheese', price : 1.00},
-{topping: 'pepperoni', price : 2.00},
 {topping: 'sausage', price : 2.00},
 ]
 
@@ -48,6 +45,7 @@ const OrderIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'OrderIntent';
     },
     handle(handlerInput) {
+        
         const size = handlerInput.requestEnvelope.request.intent.slots.size.value;
         const crust = handlerInput.requestEnvelope.request.intent.slots.crust.value;
         const topping = handlerInput.requestEnvelope.request.intent.slots.topping.value;
@@ -58,7 +56,7 @@ const OrderIntentHandler = {
         
 function getCrustPrice(){
     for(var x = 0; x < crustArray.length; x++){
-        if(crust.value === crustArray[x].crust){
+        if(crust=== crustArray[x].crust){
         return crustArray[x].price;
         } 
     }
@@ -67,8 +65,17 @@ function getCrustPrice(){
 
 function getToppingPrice(){
     for(var x = 0; x < toppingArray.length; x++){
-        if(topping.value === toppingArray[x].topping){
+        if(topping === toppingArray[x].topping){
         return toppingArray[x].price;
+        } 
+    }
+
+}
+
+function getSizePrice(){
+    for(var x = 0; x < SizeArray.length; x++){
+        if(size === SizeArray[x].size){
+        return SizeArray[x].price;
         } 
     }
 
@@ -84,16 +91,14 @@ function finalPrice(){
     return totalPrice;
 }
         
-//=====================================================================================================================          
         
         
-       const speechText = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> You mentioned,
-    that you wanted a ${size.value} , ${crust.value} pizza with ${topping.value}
-    Therefore your total is` + finalPrice() + ` dollars. Thanks for your order,` + 
+const speechText = `<audio src='soundbank://soundlibrary/home/amzn_sfx_doorbell_chime_02'/> You mentioned,
+    that you wanted a ${size} , ${crust} pizza with ${topping},  Therefore your total is` + finalPrice() + ` dollars. Thanks for your order,` + 
     `It will be ready shortly <audio src='soundbank://soundlibrary/foley/amzn_sfx_swoosh_cartoon_fast_01'/>`;
     return handlerInput.responseBuilder
-        .speak(speechOutput)
-        .reprompt(speechOutput)
+        .speak(speechText)
+        .reprompt(speechText)
         .getResponse();  
         
  
@@ -190,4 +195,3 @@ exports.handler = Alexa.SkillBuilders.custom()
     .addErrorHandlers(
         ErrorHandler)
     .lambda();
-
